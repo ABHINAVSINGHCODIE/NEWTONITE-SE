@@ -1,0 +1,16 @@
+{
+  "name": "newtonite-operations-under-pressure",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Operations Under Pressure - Internal Operations Management System",
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:worker": "npm --prefix server run worker",
+    "dev:client": "npm --prefix client run dev",
+    "build:server": "npm --prefix server run build",
+    "build:client": "npm --prefix client run build",
+    "test": "npm --prefix server test",
+    "seed": "npm --prefix server run seed",
+    "db:push": "npm --prefix server run prisma:push"
+  }
+}
