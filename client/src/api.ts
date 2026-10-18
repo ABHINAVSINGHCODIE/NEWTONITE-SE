@@ -51,6 +51,18 @@ export const api = {
     return handleResponse<{ user: User }>(res);
   },
 
+  async addMember(data: { name: string; email: string; teamId: string; role: string; password?: string }) {
+    const res = await fetch(`${API_BASE}/auth/members`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<{ message: string; user: any }>(res);
+  },
+
   logout() {
     localStorage.removeItem('token');
   },

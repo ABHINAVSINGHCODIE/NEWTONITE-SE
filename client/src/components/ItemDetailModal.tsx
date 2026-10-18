@@ -170,9 +170,9 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
               <span className="type-pill">{item.type.replace('_', ' ')}</span>
               <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Version: {item.version}</span>
             </div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '700' }}>{item.title}</h2>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#172b4d' }}>{item.title}</h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94a3b8' }}>
+          <button onClick={onClose} style={{ color: '#5e6c84', cursor: 'pointer' }}>
             <X size={20} />
           </button>
         </div>
@@ -199,13 +199,13 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           )}
 
           {/* Quick Action Ribbon */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', background: '#1e293b', padding: '0.75rem', borderRadius: '8px' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8' }}>Actions:</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', background: '#f4f5f7', border: '1px solid #dfe1e6', padding: '0.75rem', borderRadius: '6px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#5e6c84' }}>Actions:</span>
 
             {/* Atomic Claim */}
             {!item.assignee && canModify && (
-              <button className="btn-primary" onClick={handleClaim} disabled={loading}>
-                <Hand size={14} /> Claim Ticket
+              <button className="btn-primary" onClick={handleClaim} disabled={loading} style={{ background: '#0052cc' }}>
+                <Hand size={14} style={{ marginRight: '4px' }} /> Claim Ticket
               </button>
             )}
 
@@ -228,10 +228,10 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                         : `Move to ${target.replace('_', ' ')}`
                     }
                   >
-                    <ArrowRight size={14} />
+                    <ArrowRight size={14} style={{ marginRight: '4px' }} />
                     <span>Move to {target.replace('_', ' ')}</span>
                     {requiresApproval && (
-                      <span style={{ fontSize: '0.65rem', background: '#581c87', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>
+                      <span style={{ fontSize: '0.65rem', background: '#eae6ff', color: '#403294', padding: '0.1rem 0.35rem', borderRadius: '3px', marginLeft: '4px', fontWeight: 700 }}>
                         Lead
                       </span>
                     )}
@@ -277,61 +277,90 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 <button className="btn-secondary" onClick={() => setIsEditing(false)}>
                   Cancel
                 </button>
-                <button className="btn-primary" onClick={handleSaveEdit} disabled={loading}>
+                <button className="btn-primary" onClick={handleSaveEdit} disabled={loading} style={{ background: '#0052cc' }}>
                   Save Changes (v{item.version})
                 </button>
               </div>
             </div>
           ) : (
             <div>
-              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.25rem', fontWeight: 600 }}>DESCRIPTION</div>
-              <p style={{ background: '#0b1120', padding: '0.85rem', borderRadius: '8px', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>
+              <div style={{ fontSize: '0.75rem', color: '#5e6c84', marginBottom: '0.35rem', fontWeight: 700, textTransform: 'uppercase' }}>
+                Description
+              </div>
+              <p
+                style={{
+                  background: '#fafbfc',
+                  border: '1px solid #dfe1e6',
+                  color: '#172b4d',
+                  padding: '0.95rem',
+                  borderRadius: '6px',
+                  fontSize: '0.9rem',
+                  lineHeight: '1.5',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
                 {item.description}
               </p>
             </div>
           )}
 
           {/* Meta Attributes */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: '#0f172a', padding: '0.85rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '0.85rem',
+              background: '#f4f5f7',
+              border: '1px solid #dfe1e6',
+              padding: '0.95rem',
+              borderRadius: '6px',
+              fontSize: '0.85rem',
+              color: '#172b4d',
+            }}
+          >
             <div>
-              <span style={{ color: '#64748b' }}>Team: </span>
-              <strong>{item.team.name}</strong>
+              <span style={{ color: '#5e6c84', fontWeight: 600 }}>Team: </span>
+              <strong style={{ color: '#0052cc' }}>{item.team.name}</strong>
             </div>
             <div>
-              <span style={{ color: '#64748b' }}>Creator: </span>
+              <span style={{ color: '#5e6c84', fontWeight: 600 }}>Creator: </span>
               <strong>{item.creator.name}</strong>
             </div>
             <div>
-              <span style={{ color: '#64748b' }}>Assignee: </span>
+              <span style={{ color: '#5e6c84', fontWeight: 600 }}>Assignee: </span>
               <strong>{item.assignee ? item.assignee.name : 'Unassigned'}</strong>
             </div>
             <div>
-              <span style={{ color: '#64748b' }}>Created: </span>
+              <span style={{ color: '#5e6c84', fontWeight: 600 }}>Created: </span>
               <span>{new Date(item.createdAt).toLocaleString()}</span>
             </div>
           </div>
 
           {/* Activity Log & Comments */}
-          <div style={{ borderTop: '1px solid #334155', paddingTop: '1rem' }}>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.75rem' }}>
+          <div style={{ borderTop: '1px solid #dfe1e6', paddingTop: '1rem' }}>
+            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#172b4d', marginBottom: '0.85rem' }}>
               Activity History & Comments
             </h4>
 
             {/* Timeline */}
-            <div className="timeline">
+            <div className="timeline" style={{ borderLeft: '2px solid #dfe1e6' }}>
               {activities.map((act) => (
-                <div key={act.id} className="timeline-item">
-                  <div className="timeline-meta">
-                    <strong>{act.actor.name}</strong> • {new Date(act.createdAt).toLocaleString()}
+                <div key={act.id} className="timeline-item" style={{ marginBottom: '0.65rem' }}>
+                  <div className="timeline-meta" style={{ color: '#5e6c84', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
+                    <strong style={{ color: '#172b4d' }}>{act.actor.name}</strong> • {new Date(act.createdAt).toLocaleString()}
                   </div>
-                  <div className="timeline-text">
+                  <div className="timeline-text" style={{ color: '#172b4d', fontSize: '0.85rem' }}>
                     {act.action === 'created' && 'Created this work item.'}
                     {act.action === 'claimed' && 'Claimed this item.'}
                     {act.action === 'status_changed' && (
-                      <span>Status changed from <code>{act.fromValue}</code> to <code>{act.toValue}</code></span>
+                      <span>
+                        Status changed from <code style={{ background: '#ebecf0', padding: '0.1rem 0.3rem', borderRadius: '3px' }}>{act.fromValue}</code> to <code style={{ background: '#deebff', color: '#0747a6', padding: '0.1rem 0.3rem', borderRadius: '3px' }}>{act.toValue}</code>
+                      </span>
                     )}
                     {act.action === 'priority_changed' && (
-                      <span>Priority updated from <code>{act.fromValue}</code> to <code>{act.toValue}</code></span>
+                      <span>
+                        Priority updated from <code>{act.fromValue}</code> to <code>{act.toValue}</code>
+                      </span>
                     )}
                     {act.action === 'assigned' && (
                       <span>Assignee changed to <code>{act.toValue}</code></span>
@@ -345,12 +374,22 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             {/* Comments Thread */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1rem' }}>
               {comments.map((c) => (
-                <div key={c.id} style={{ background: '#1e293b', padding: '0.65rem 0.85rem', borderRadius: '8px', fontSize: '0.85rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', fontSize: '0.75rem', marginBottom: '0.2rem' }}>
-                    <strong>{c.author.name}</strong>
+                <div
+                  key={c.id}
+                  style={{
+                    background: '#fafbfc',
+                    border: '1px solid #dfe1e6',
+                    padding: '0.75rem 0.95rem',
+                    borderRadius: '6px',
+                    fontSize: '0.85rem',
+                    color: '#172b4d',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#5e6c84', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
+                    <strong style={{ color: '#0052cc' }}>{c.author.name}</strong>
                     <span>{new Date(c.createdAt).toLocaleTimeString()}</span>
                   </div>
-                  <div>{c.content}</div>
+                  <div style={{ lineHeight: '1.4' }}>{c.content}</div>
                 </div>
               ))}
             </div>
@@ -365,8 +404,13 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
               />
-              <button type="submit" className="btn-primary" disabled={loading || !newComment.trim()}>
-                <Send size={14} /> Send
+              <button
+                type="submit"
+                className="btn-primary"
+                style={{ background: '#0052cc' }}
+                disabled={loading || !newComment.trim()}
+              >
+                <Send size={14} style={{ marginRight: '4px' }} /> Send
               </button>
             </form>
           </div>
