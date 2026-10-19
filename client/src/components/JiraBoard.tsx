@@ -1,17 +1,19 @@
 import React from 'react';
 import { WorkItem, Role } from '../types';
-import { CheckSquare, AlertCircle, ArrowUp, ArrowDown, Hand, MessageSquare } from 'lucide-react';
+import { CheckSquare, AlertCircle, ArrowUp, ArrowDown, Hand, ChevronRight, Check, Play, Clock, RotateCcw } from 'lucide-react';
 
 interface JiraBoardProps {
   items: WorkItem[];
   userRole: Role | null;
   onSelect: (item: WorkItem) => void;
   onClaim: (item: WorkItem, e: React.MouseEvent) => void;
+  onStatusChange?: (item: WorkItem, newStatus: string) => void;
 }
 
 interface ColumnDef {
   key: string;
   label: string;
+  status: string;
   filter: (item: WorkItem) => boolean;
 }
 
@@ -19,21 +21,25 @@ const COLUMNS: ColumnDef[] = [
   {
     key: 'todo',
     label: 'TO DO',
+    status: 'Open',
     filter: (i) => i.status === 'Open',
   },
   {
     key: 'inprogress',
     label: 'IN PROGRESS',
+    status: 'In_Progress',
     filter: (i) => i.status === 'In_Progress',
   },
   {
     key: 'review',
     label: 'CODE REVIEW / APPROVAL',
+    status: 'Awaiting_Approval',
     filter: (i) => i.status === 'Awaiting_Approval',
   },
   {
     key: 'done',
     label: 'DONE',
+    status: 'Resolved',
     filter: (i) => i.status === 'Resolved' || i.status === 'Closed',
   },
 ];
@@ -43,8 +49,11 @@ export const JiraBoard: React.FC<JiraBoardProps> = ({
   userRole,
   onSelect,
   onClaim,
+  onStatusChange,
 }) => {
   const canClaim = userRole !== 'Viewer' && userRole !== null;
+  const isLead = userRole === 'Lead' || userRole === 'Admin';
+  const canEdit = userRole !== 'Viewer' && userRole !== null;
 
   const getTeamTagClass = (teamName: string) => {
     if (teamName.includes('Platform')) return 'tag-Core';
@@ -78,6 +87,7 @@ export const JiraBoard: React.FC<JiraBoardProps> = ({
                     key={item.id}
                     className="jira-card"
                     onClick={() => onSelect(item)}
+                    style={{ position: 'relative' }}
                   >
                     {/* Title */}
                     <div className="jira-card-title">{item.title}</div>
@@ -107,7 +117,7 @@ export const JiraBoard: React.FC<JiraBoardProps> = ({
                       </div>
 
                       {/* Assignee / Claim */}
-                      <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                         {item.assignee ? (
                           <div className="jira-avatar" title={`Assigned to ${item.assignee.name}`}>
                             {item.assignee.name.charAt(0).toUpperCase()}
@@ -127,6 +137,97 @@ export const JiraBoard: React.FC<JiraBoardProps> = ({
                         )}
                       </div>
                     </div>
+
+                    {/* Quick Move Transition Footer */}
+                    {canEdit && onStatusChange && (
+                      <div
+                        style={{
+                          marginTop: '0.5rem',
+                          paddingTop: '0.45rem',
+                          borderTop: '1px solid #f4f5f7',
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center',
+                          gap: '0.3rem',
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {item.status === 'Open' && (
+                          <button
+                            className="btn-secondary"
+                            style={{
+                              padding: '0.18rem 0.45rem',
+                              fontSize: '0.68rem',
+                              color: '#0052cc',
+                              fontWeight: 600,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2px',
+                            }}
+                            onClick={() => onStatusChange(item, 'In_Progress')}
+                            title="Move to In Progress"
+                          >
+                            <Play size={10} /> Start Work →
+                          </button>
+                        )}
+
+                        {item.status === 'In_Progress' && (
+                          <button
+                            className="btn-secondary"
+                            style={{
+                              padding: '0.18rem 0.45rem',
+                              fontSize: '0.68rem',
+                              color: '#ff8b00',
+                              fontWeight: 600,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2px',
+                            }}
+                            onClick={() => onStatusChange(item, 'Awaiting_Approval')}
+                            title="Submit for Lead Review"
+                          >
+                            <Clock size={10} /> Review →
+                          </button>
+                        )}
+
+                        {item.status === 'Awaiting_Approval' && isLead && (
+                          <button
+                            className="btn-primary"
+                            style={{
+                              padding: '0.18rem 0.45rem',
+                              fontSize: '0.68rem',
+                              background: '#00875a',
+                              fontWeight: 700,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2px',
+                            }}
+                            onClick={() => onStatusChange(item, 'Resolved')}
+                            title="Approve & Resolve"
+                          >
+                            <Check size={10} /> Approve ✓
+                          </button>
+                        )}
+
+                        {(item.status === 'Resolved' || item.status === 'Closed') && (
+                          <button
+                            className="btn-secondary"
+                            style={{
+                              padding: '0.18rem 0.45rem',
+                              fontSize: '0.68rem',
+                              color: '#5e6c84',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2px',
+                            }}
+                            onClick={() => onStatusChange(item, 'In_Progress')}
+                            title="Re-open ticket"
+                          >
+                            <RotateCcw size={10} /> Reopen
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}
